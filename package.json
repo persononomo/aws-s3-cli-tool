@@ -1,0 +1,26 @@
+{
+  "name": "aws-s3-cli-tool",
+  "version": "1.0.0",
+  "description": "A Node.js CLI tool template for AWS S3",
+  "main": "cli.js",
+  "bin": {
+    "s3-cli": "./cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "s3",
+    "cli",
+    "tool"
+  ],
+  "author": "Pavlo Kozub",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.609.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "yargs": "^17.7.2"
+  }
+}
