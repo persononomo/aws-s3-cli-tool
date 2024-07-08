@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const { S3Client, ListObjectsV2Command } = require('@aws-sdk/client-s3');
+const { S3Client, ListObjectsV2Command, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { Command } = require('commander');
+const fs = require('fs');
 require('dotenv').config();
 
 const S3 = new S3Client({
@@ -23,6 +24,7 @@ program
     .action(() => {
         program.outputHelp();
     });
+
 program
     .command('list-files')
     .description('List all files in the S3 bucket')
@@ -46,6 +48,38 @@ program
             }
         } catch (error) {
             console.error("Error listing files: ", error.message);
+        }
+    });
+
+program
+    .command('upload-file')
+    .description('Upload a local file to a defined location in the S3 bucket')
+    .option('--bucket <bucket>', 'The S3 bucket name', process.env.S3_BUCKET)
+    .option('--key <key>', 'The destination key in the S3 bucket')
+    .option('--file <file>', 'The local file path')
+    .action(async (options) => {
+        const bucketName = options.bucket;
+        const key = process.env.S3_PREFIX + '/' + options.key || '';
+        const filePath = options.file;
+
+        if (!filePath || !key) {
+            console.error('File path and destination key are required.');
+            process.exit(1);
+        }
+
+        try {
+            const fileContent = fs.readFileSync(filePath);
+
+            const params = {
+                Bucket: bucketName,
+                Key: key,
+                Body: fileContent
+            };
+            const command = new PutObjectCommand(params);
+            await S3.send(command);
+            console.log(`File uploaded successfully to ${bucketName}/${key}`);
+        } catch (error) {
+            console.error("Error uploading file: ", error);
         }
     });
 
