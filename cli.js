@@ -12,7 +12,7 @@ const program = new Command();
 const createS3Client = (profile) => {
     const credentials = profile ? fromIni({ profile }) : undefined;
     return new S3Client({
-        region: process.env.S3_REGION,
+        region: process.env.AWS_REGION,
         credentials
     });
 };
